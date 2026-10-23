@@ -21,16 +21,16 @@ Phase 순서대로 진행한다. 한 번에 하나의 Phase만 작업하고, 완
 
 ## Phase 1 — 게시글 CRUD
 
-- [ ] `V1__create_posts.sql` (`docs/domain-model.md` 기준)
-- [ ] `Post` 엔티티, `PostRepository`
-- [ ] DTO: `PostCreateRequest`, `PostUpdateRequest`, `PostDetailResponse`, `PostSummaryResponse`
-- [ ] `PostService`: 작성, 단건 조회(원자적 조회수 증가), 목록(페이징), 수정, 삭제
-- [ ] `PostController` (`docs/api-spec.md` 기준, 201 + Location / 204)
-- [ ] `POST_NOT_FOUND` 에러 처리
-- [ ] 테스트
-  - [ ] `PostRepositoryTest` (Testcontainers): 조회수 증가 쿼리, 목록 페이징
-  - [ ] `PostServiceTest` (Mockito)
-  - [ ] `PostControllerTest` (`@WebMvcTest` + `MockMvcTester`): 정상/검증 실패/404
+- [x] `V1__create_posts.sql` (`docs/domain-model.md` 기준)
+- [x] `Post` 엔티티, `PostRepository`
+- [x] DTO: `PostCreateRequest`, `PostUpdateRequest`, `PostDetailResponse`, `PostSummaryResponse`
+- [x] `PostService`: 작성, 단건 조회(원자적 조회수 증가), 목록(페이징), 수정, 삭제
+- [x] `PostController` (`docs/api-spec.md` 기준, 201 + Location / 204)
+- [x] `POST_NOT_FOUND` 에러 처리
+- [x] 테스트
+  - [x] `PostRepositoryTest` (Testcontainers): 조회수 증가 쿼리, 목록 페이징
+  - [x] `PostServiceTest` (Mockito)
+  - [x] `PostControllerTest` (`@WebMvcTest` + `MockMvcTester`): 정상/검증 실패/404
 
 **완료 조건**
 - `./gradlew build` 통과

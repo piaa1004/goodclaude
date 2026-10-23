@@ -158,7 +158,8 @@ CREATE INDEX idx_comments_post_id_id ON comments (post_id, id);
 
 | 용도 | 방식 |
 |------|------|
-| 조회수 증가 | `@Modifying(clearAutomatically = true) @Query("update Post p set p.viewCount = p.viewCount + 1 where p.id = :id")` → 반환값 0이면 `POST_NOT_FOUND` |
+| 조회수 증가 | `@Modifying(flushAutomatically = true, clearAutomatically = true) @Query("update Post p set p.viewCount = p.viewCount + 1 where p.id = :id")` → 반환값 0이면 `POST_NOT_FOUND` |
+| 게시글 삭제 | `@Modifying(flushAutomatically = true, clearAutomatically = true) @Query("delete from Post p where p.id = :id")` 단일 쿼리 → 반환값 0이면 `POST_NOT_FOUND`. 댓글은 DB FK `ON DELETE CASCADE`로 함께 삭제 (엔티티를 로딩하지 않음) |
 | 게시글 목록 + 댓글 수 | JPQL DTO projection, 댓글 수는 상관 서브쿼리 `(select count(c) from Comment c where c.post = p)`. count 쿼리는 `countQuery`로 별도 지정(서브쿼리 제외) |
 | 검색 | `lower(p.title) like lower(concat('%', :keyword, '%'))` 계열. `keyword`의 `%`, `_`는 escape 처리 |
 | 댓글 목록 | `findByPostId(Long postId, Pageable pageable)`, 정렬은 Service에서 `id,asc`로 고정 |

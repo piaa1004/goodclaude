@@ -4,7 +4,7 @@
 - Content-Type: `application/json`
 - 시각 필드: ISO-8601 UTC (`2026-10-23T03:15:00Z`)
 - 에러 응답: `ProblemDetail` — 형식과 코드 목록은 `docs/error-codes.md`
-- 공통 에러: 모든 엔드포인트는 엔드포인트별 에러 외에 `404 RESOURCE_NOT_FOUND`, `405 METHOD_NOT_ALLOWED`, `406 NOT_ACCEPTABLE`, `415 UNSUPPORTED_MEDIA_TYPE`(요청 본문이 있는 API), `500 INTERNAL_ERROR`를 반환할 수 있다
+- 공통 에러: 모든 엔드포인트는 엔드포인트별 에러 외에 `400 MALFORMED_REQUEST`(컨테이너 단계에서 거부된 요청), `404 RESOURCE_NOT_FOUND`, `405 METHOD_NOT_ALLOWED`, `406 NOT_ACCEPTABLE`, `500 INTERNAL_ERROR`, 그리고 요청 본문이 있는 API는 `400 MALFORMED_JSON`, `415 UNSUPPORTED_MEDIA_TYPE`를 반환할 수 있다
 
 ## 엔드포인트 요약
 
@@ -128,13 +128,13 @@ Request
 
 Response `200 OK` — `PostDetailResponse`
 
-Errors: `400 INVALID_INPUT`, `404 POST_NOT_FOUND`
+Errors: `400 INVALID_INPUT`, `404 POST_NOT_FOUND`, `400 INVALID_PARAMETER` (`postId` 타입 불일치)
 
 ### DELETE `/api/v1/posts/{postId}` — 삭제
 
 Response `204 No Content` (댓글도 함께 삭제)
 
-Errors: `404 POST_NOT_FOUND`
+Errors: `404 POST_NOT_FOUND`, `400 INVALID_PARAMETER` (`postId` 타입 불일치)
 
 ---
 

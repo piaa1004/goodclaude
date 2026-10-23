@@ -41,6 +41,7 @@
 | `INVALID_INPUT` | 400 | 입력값이 올바르지 않습니다. | `@Valid` 실패 (`MethodArgumentNotValidException`, `HandlerMethodValidationException`) |
 | `INVALID_PARAMETER` | 400 | 요청 파라미터가 올바르지 않습니다. | 타입 불일치(`MethodArgumentTypeMismatchException`), 필수 파라미터/헤더/파트 누락(`ServletRequestBindingException`, `MissingServletRequestPartException`), enum 변환 실패 |
 | `MALFORMED_JSON` | 400 | 요청 본문을 읽을 수 없습니다. | `HttpMessageNotReadableException` |
+| `MALFORMED_REQUEST` | 400 | 요청 형식이 올바르지 않습니다. | 애플리케이션 도달 전 서블릿 컨테이너(Tomcat)가 거부한 요청 (잘못된 URL 퍼센트 인코딩 등) |
 | `INVALID_SORT_PROPERTY` | 400 | 지원하지 않는 정렬 기준입니다. | 화이트리스트 외 `sort` 필드 |
 | `RESOURCE_NOT_FOUND` | 404 | 요청한 경로를 찾을 수 없습니다. | 매핑되지 않은 URL (`NoResourceFoundException`, `NoHandlerFoundException`) |
 | `METHOD_NOT_ALLOWED` | 405 | 지원하지 않는 HTTP 메서드입니다. | `HttpRequestMethodNotSupportedException` |
@@ -72,5 +73,6 @@
 - 표에 없는 새로운 4xx가 실제로 필요해지면 전용 에러 코드를 추가하고 이 표를 갱신한다. 매핑이 누락된 예외는 `GlobalExceptionHandler`가 `ERROR` 로그(`ErrorCode mapping missing`)로 남기므로, 발견 즉시 코드를 추가한다.
 - 첨부파일이 v1 범위 밖이므로 multipart 파싱을 끈다(`spring.servlet.multipart.enabled: false`). 켜 두면 업로드 한도를 넘는 multipart 요청이 모든 경로에서 413(`MaxUploadSizeExceededException`)을 만든다. 끈 상태에서 multipart 요청은 `415 UNSUPPORTED_MEDIA_TYPE`이 된다. 첨부파일 기능을 도입하면 multipart를 다시 켜고 413 전용 코드를 추가한다.
 - DispatcherServlet 밖에서 발생한 에러(필터 예외, `sendError`, `/error` 직접 호출)는 `ProblemDetailErrorController`가 Boot 기본 `BasicErrorController`를 대체해 `ProblemDetail` + `code`로 응답한다. 상태만으로 원인이 하나로 정해지는 404/405/406/415와 5xx만 매핑하고, `/error` 직접 호출은 `RESOURCE_NOT_FOUND`로 처리한다.
+- 애플리케이션에 도달하기 전에 Tomcat이 거부한 요청은 `ProblemDetailErrorReportValve`(Tomcat 기본 HTML `ErrorReportValve` 대체)가 `ProblemDetail` + `code`로 응답한다. 컨테이너 단계 400은 `MALFORMED_REQUEST`, 5xx는 `INTERNAL_ERROR`. Spring이 이미 본문을 쓴 응답에는 관여하지 않는다. URI 자체가 잘못된 경우가 많으므로 `instance`는 URI로 해석 가능할 때만 담는다.
 - 5xx 프레임워크 예외는 예외 타입과 무관하게 `INTERNAL_ERROR`로 응답한다 (일부 5xx 예외가 400 계열 예외의 하위 타입이므로 상태를 먼저 판별).
 - `code` 필수 원칙의 예외: 406처럼 콘텐츠 협상 실패로 응답 본문 자체를 만들 수 없는 경우에는 상태 코드만 반환하는 것을 허용한다. 이를 위해 응답 형식을 강제로 우회하지 않는다. (Spring은 `ProblemDetail`을 `problem+json`으로 쓸 수 있으면 본문을 쓴다.)
