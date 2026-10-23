@@ -1,0 +1,4 @@
+# DataSource는 Testcontainers(@ServiceConnection)가 자동 구성한다.
+logging:
+  level:
+    org.hibernate.SQL: debug

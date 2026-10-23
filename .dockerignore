@@ -1,0 +1,13 @@
+build/
+.gradle/
+.git/
+.env
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+out/
+bin/
+.claude/
+docs/

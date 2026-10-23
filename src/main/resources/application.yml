@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: board
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
+        jdbc:
+          time_zone: UTC
+  data:
+    web:
+      pageable:
+        max-page-size: 100
+  mvc:
+    problemdetails:
+      enabled: true
+  servlet:
+    multipart:
+      # v1은 첨부파일이 없다. 켜 두면 multipart 요청이 모든 경로에서 code 없는 413을 만들 수 있다.
+      enabled: false
+  jackson:
+    time-zone: UTC
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
